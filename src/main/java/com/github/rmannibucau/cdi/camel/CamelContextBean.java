@@ -4,6 +4,8 @@ import org.apache.camel.CamelContext;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.impl.DefaultCamelContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.context.spi.CreationalContext;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Set;
 
 public class CamelContextBean implements Bean<CamelContext> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(CamelContextBean.class);
+
     private final BeanManager beanManager;
     private final String name;
     private final List<Class<?>> builderClasses;
@@ -88,7 +92,7 @@ public class CamelContextBean implements Bean<CamelContext> {
             try {
                 context.addRoutes(RoutesBuilder.class.cast(instance));
             } catch (Exception e) {
-                e.printStackTrace();  // TODO
+                LOGGER.error("can't get route builder " + clazz.getName());
             }
         }
 
@@ -97,7 +101,7 @@ public class CamelContextBean implements Bean<CamelContext> {
         try {
             context.start();
         } catch (Exception e) {
-            e.printStackTrace();  // TODO
+            LOGGER.error("can't start route '" + name + "'");
         }
 
         return context;
@@ -108,7 +112,7 @@ public class CamelContextBean implements Bean<CamelContext> {
         try {
             camelContext.stop();
         } catch (Exception e) {
-            e.printStackTrace(); // TODO
+            LOGGER.error("can't stop route '" + name + "'");
         } finally {
             camelContextCreationalContext.release();
         }
