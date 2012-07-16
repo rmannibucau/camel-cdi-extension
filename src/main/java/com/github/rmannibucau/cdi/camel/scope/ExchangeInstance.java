@@ -3,16 +3,16 @@ package com.github.rmannibucau.cdi.camel.scope;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 
-public class Instance {
+public class ExchangeInstance {
     private Contextual<Object> contextual;
     private CreationalContext<Object> context;
     private Object instance;
 
-    public Instance() {
+    public ExchangeInstance() {
         // no-op
     }
 
-    public Instance(final Contextual<Object> component, final CreationalContext<Object> creationalContext, final Object obj) {
+    public ExchangeInstance(final Contextual<Object> component, final CreationalContext<Object> creationalContext, final Object obj) {
         contextual = component;
         context = creationalContext;
         instance = obj;
