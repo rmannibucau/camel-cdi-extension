@@ -1,6 +1,8 @@
-package com.github.rmannibucau.cdi.camel;
+package com.github.rmannibucau.cdi.camel.context;
 
 import com.github.rmannibucau.cdi.camel.builder.Builder1;
+import com.github.rmannibucau.cdi.camel.context.CamelContextExtension;
+import com.github.rmannibucau.cdi.camel.context.CamelContextId;
 import org.apache.camel.CamelContext;
 import org.jboss.arquillian.container.test.api.Deployment;
 import org.jboss.arquillian.junit.Arquillian;

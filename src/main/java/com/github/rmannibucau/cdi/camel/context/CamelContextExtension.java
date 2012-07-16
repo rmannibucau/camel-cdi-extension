@@ -1,4 +1,4 @@
-package com.github.rmannibucau.cdi.camel;
+package com.github.rmannibucau.cdi.camel.context;
 
 import org.apache.camel.builder.RouteBuilder;
 

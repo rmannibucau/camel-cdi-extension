@@ -1,5 +1,7 @@
-package com.github.rmannibucau.cdi.camel;
+package com.github.rmannibucau.cdi.camel.context;
 
+import com.github.rmannibucau.cdi.camel.registry.CdiRegistry;
+import com.github.rmannibucau.cdi.camel.scope.ExchangeScope;
 import org.apache.camel.CamelContext;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
@@ -84,7 +86,7 @@ public class CamelContextBean implements Bean<CamelContext> {
 
     @Override
     public CamelContext create(final CreationalContext<CamelContext> camelContextCreationalContext) {
-        final DefaultCamelContext context = new DefaultCamelContext();
+        final DefaultCamelContext context = new DefaultCamelContext(new CdiRegistry());
         for (Class<?> clazz : builderClasses) {
             final Set<Bean<?>> beans = beanManager.getBeans(clazz);
             final Bean<?> bean = beanManager.resolve(beans);
@@ -97,11 +99,12 @@ public class CamelContextBean implements Bean<CamelContext> {
         }
 
         context.setName(name);
+        context.getManagementStrategy().addEventNotifier(new ExchangeScope());
 
         try {
             context.start();
         } catch (Exception e) {
-            LOGGER.error("can't start route '" + name + "'");
+            LOGGER.error("can't start route '" + name + "'", e);
         }
 
         return context;

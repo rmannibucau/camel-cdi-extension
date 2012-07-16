@@ -1,4 +1,4 @@
-package com.github.rmannibucau.cdi.camel;
+package com.github.rmannibucau.cdi.camel.context;
 
 import javax.inject.Qualifier;
 import java.lang.annotation.Documented;

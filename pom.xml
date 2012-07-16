@@ -21,6 +21,12 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.apache.deltaspike.core</groupId>
+      <artifactId>deltaspike-core-api</artifactId>
+      <version>0.2-incubating</version>
+    </dependency>
+
+    <dependency>
       <groupId>org.apache.openejb</groupId>
       <artifactId>arquillian-openejb-embedded-4</artifactId>
       <version>4.1.0-SNAPSHOT</version>
@@ -40,4 +46,8 @@
       <url>https://repository.apache.org/content/groups/snapshots/</url>
     </repository>
   </repositories>
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 </project>

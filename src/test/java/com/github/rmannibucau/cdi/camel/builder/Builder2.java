@@ -1,6 +1,6 @@
 package com.github.rmannibucau.cdi.camel.builder;
 
-import com.github.rmannibucau.cdi.camel.CamelContextConfig;
+import com.github.rmannibucau.cdi.camel.context.CamelContextConfig;
 import org.apache.camel.builder.RouteBuilder;
 
 @CamelContextConfig(contextName = "context1")

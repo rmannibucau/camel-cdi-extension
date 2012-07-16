@@ -1,11 +1,12 @@
-package com.github.rmannibucau.cdi.camel;
+package com.github.rmannibucau.cdi.camel.scope;
 
+import javax.inject.Scope;
 import java.lang.annotation.Documented;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
+@Scope
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CamelContextConfig { // shouldn't be a qualifier
-    String contextName() default "";
+public @interface ExchangeScoped {
 }
