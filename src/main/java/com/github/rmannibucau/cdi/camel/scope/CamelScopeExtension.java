@@ -7,6 +7,6 @@ import javax.enterprise.inject.spi.Extension;
 
 public class CamelScopeExtension implements Extension {
     protected void afterBeanDiscovery(@Observes final AfterBeanDiscovery afterBeanDiscovery, final BeanManager beanManager) {
-        afterBeanDiscovery.addContext(new ExchangeScope());
+        afterBeanDiscovery.addContext(new ExchangeContext());
     }
 }

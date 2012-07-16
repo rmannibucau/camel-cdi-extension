@@ -10,8 +10,8 @@ import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ExchangeScope implements Context {
-    private static final String BEANS_KEY = ExchangeScope.class.getName();
+public class ExchangeContext implements Context {
+    private static final String BEANS_KEY = ExchangeContext.class.getName();
 
     @Override
     public Class<? extends Annotation> getScope() {
@@ -70,6 +70,6 @@ public class ExchangeScope implements Context {
 
     private Map<Contextual<?>, Instance> map(final Exchange exchange) {
         final Map<String, Object> props = exchange.getProperties();
-        return  (Map<Contextual<?>, Instance>) props.get(ExchangeScope.class.getName());
+        return  (Map<Contextual<?>, Instance>) props.get(ExchangeContext.class.getName());
     }
 }
