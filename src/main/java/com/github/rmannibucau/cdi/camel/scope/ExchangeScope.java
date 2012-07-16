@@ -22,9 +22,14 @@ public class ExchangeScope implements Context {
     public <T> T get(final Contextual<T> component, final CreationalContext<T> creationalContext) {
         Instance instance = instance(component);
         if (instance == null) {
-            final Object obj = component.create(creationalContext);
-            instance = new Instance((Contextual<Object>) component, (CreationalContext<Object>) creationalContext, obj);
-            map().put(component, instance);
+            synchronized (this) {
+                instance = instance(component);
+                if (instance == null) {
+                    final Object obj = component.create(creationalContext);
+                    instance = new Instance((Contextual<Object>) component, (CreationalContext<Object>) creationalContext, obj);
+                    map(exchange()).put(component, instance);
+                }
+            }
         }
         return (T) instance.getInstance();
     }
@@ -48,17 +53,22 @@ public class ExchangeScope implements Context {
     }
 
     private Instance instance(final Contextual<?> component) {
-        Map<Contextual<?>, Instance> map = map();
+        final Exchange exchange = exchange();
+        Map<Contextual<?>, Instance> map = map(exchange);
         if (map == null) {
-            map = new ConcurrentHashMap<Contextual<?>, Instance>();
-            exchange().getProperties().put(BEANS_KEY, map);
+            synchronized (exchange) {
+                map = map(exchange);
+                if (map == null) {
+                    map = new ConcurrentHashMap<Contextual<?>, Instance>();
+                    exchange.getProperties().put(BEANS_KEY, map);
+                }
+            }
         }
 
         return map.get(component);
     }
 
-    private Map<Contextual<?>, Instance> map() {
-        final Exchange exchange = exchange();
+    private Map<Contextual<?>, Instance> map(final Exchange exchange) {
         final Map<String, Object> props = exchange.getProperties();
         return  (Map<Contextual<?>, Instance>) props.get(ExchangeScope.class.getName());
     }
