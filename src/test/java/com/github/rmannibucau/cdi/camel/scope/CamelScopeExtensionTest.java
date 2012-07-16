@@ -82,13 +82,15 @@ public class CamelScopeExtensionTest {
                         messages++;
 
                         final Bean1 bean = instance();
-                        if (firstBean != null) {
-                            assertNotSame(firstBean, bean);
-                        }
-                        firstBean = bean;
 
-                        assertNotNull(firstBean);
-                        exchange.getIn().setBody(firstBean.enclose(exchange.getIn().getBody(String.class)));
+                        assertNotNull(bean);
+                        exchange.getIn().setBody(bean.enclose(exchange.getIn().getBody(String.class)));
+
+                        // after first call to get rid of the proxy
+                        if (firstBean != null) { // using Bean1.current since bean is proxied
+                            assertNotSame(firstBean, Bean1.current);
+                        }
+                        firstBean = Bean1.current;
                     }
                 })
                 .process(new Processor() {
@@ -96,7 +98,7 @@ public class CamelScopeExtensionTest {
                     public void process(final Exchange exchange) throws Exception { // check 1 instance / message
                         final Bean1 second = instance();
                         assertNotNull(second);
-                        assertSame(firstBean, second);
+                        assertSame(firstBean, Bean1.current);
                     }
                 })
                 .process(new Processor() {

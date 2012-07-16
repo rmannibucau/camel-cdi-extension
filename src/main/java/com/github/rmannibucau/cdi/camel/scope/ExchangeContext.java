@@ -2,15 +2,20 @@ package com.github.rmannibucau.cdi.camel.scope;
 
 import com.github.rmannibucau.cdi.camel.util.ExchangeHolder;
 import org.apache.camel.Exchange;
+import org.apache.camel.management.event.AbstractExchangeEvent;
+import org.apache.camel.management.event.ExchangeCompletedEvent;
+import org.apache.camel.management.event.ExchangeFailedEvent;
+import org.apache.camel.support.EventNotifierSupport;
 
 import javax.enterprise.context.spi.Context;
 import javax.enterprise.context.spi.Contextual;
 import javax.enterprise.context.spi.CreationalContext;
 import java.lang.annotation.Annotation;
+import java.util.EventObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public class ExchangeContext implements Context {
+public class ExchangeContext extends EventNotifierSupport implements Context {
     private static final String BEANS_KEY = ExchangeContext.class.getName();
 
     @Override
@@ -71,5 +76,32 @@ public class ExchangeContext implements Context {
     private Map<Contextual<?>, Instance> map(final Exchange exchange) {
         final Map<String, Object> props = exchange.getProperties();
         return  (Map<Contextual<?>, Instance>) props.get(ExchangeContext.class.getName());
+    }
+
+    @Override
+    public void notify(final EventObject event) throws Exception {
+        final Exchange doneExchange = ((AbstractExchangeEvent) event).getExchange();
+        final Map<Contextual<?>, Instance> map = map(doneExchange);
+        if (map != null) {
+            for (Map.Entry<Contextual<?>, Instance> entry : map.entrySet()) {
+                entry.getValue().destroy();
+            }
+        }
+    }
+
+    @Override
+    public boolean isEnabled(final EventObject event) {
+        return ExchangeCompletedEvent.class.equals(event.getClass())
+                || ExchangeFailedEvent.class.equals(event.getClass());
+    }
+
+    @Override
+    protected void doStart() throws Exception {
+        // no-op
+    }
+
+    @Override
+    protected void doStop() throws Exception {
+        // no-op
     }
 }
