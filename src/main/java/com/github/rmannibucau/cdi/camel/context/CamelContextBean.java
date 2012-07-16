@@ -1,7 +1,5 @@
 package com.github.rmannibucau.cdi.camel.context;
 
-import com.github.rmannibucau.cdi.camel.registry.CdiRegistry;
-import com.github.rmannibucau.cdi.camel.scope.ExchangeScope;
 import org.apache.camel.CamelContext;
 import org.apache.camel.RoutesBuilder;
 import org.apache.camel.builder.RouteBuilder;
@@ -22,7 +20,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-public class CamelContextBean implements Bean<CamelContext> {
+public final class CamelContextBean implements Bean<CamelContext> {
     private static final Logger LOGGER = LoggerFactory.getLogger(CamelContextBean.class);
 
     private final BeanManager beanManager;
@@ -86,7 +84,7 @@ public class CamelContextBean implements Bean<CamelContext> {
 
     @Override
     public CamelContext create(final CreationalContext<CamelContext> camelContextCreationalContext) {
-        final DefaultCamelContext context = new DefaultCamelContext(new CdiRegistry());
+        final DefaultCamelContext context = new CdiCamelContext();
         for (Class<?> clazz : builderClasses) {
             final Set<Bean<?>> beans = beanManager.getBeans(clazz);
             final Bean<?> bean = beanManager.resolve(beans);
@@ -99,7 +97,6 @@ public class CamelContextBean implements Bean<CamelContext> {
         }
 
         context.setName(name);
-        context.getManagementStrategy().addEventNotifier(new ExchangeScope());
 
         try {
             context.start();

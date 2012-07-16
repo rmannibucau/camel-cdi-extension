@@ -1,13 +1,12 @@
 package com.github.rmannibucau.cdi.camel.scope;
 
 import com.github.rmannibucau.cdi.camel.bean.Bean1;
-import com.github.rmannibucau.cdi.camel.registry.CdiRegistry;
+import com.github.rmannibucau.cdi.camel.context.CdiCamelContext;
 import org.apache.camel.CamelContext;
 import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.ProducerTemplate;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.impl.DefaultProducerTemplate;
 import org.apache.webbeans.config.WebBeansContext;
 import org.jboss.arquillian.container.test.api.Deployment;
@@ -47,9 +46,8 @@ public class CamelScopeExtensionTest {
 
     @BeforeClass
     public static void startContext() throws Exception {
-        context = new DefaultCamelContext(new CdiRegistry());
+        context = new CdiCamelContext();
         context.addRoutes(new CamelScopeBuilder());
-        context.getManagementStrategy().addEventNotifier(new ExchangeScope());
         context.start();
 
         template = new DefaultProducerTemplate(context);
@@ -77,9 +75,10 @@ public class CamelScopeExtensionTest {
         @Override
         public void configure() throws Exception {
             from("direct:scope")
+                .routeId("scope-route")
                 .process(new Processor() {
                     @Override
-                    public void process(final Exchange exchange) throws Exception { // count mesasge + check new bean is created
+                    public void process(final Exchange exchange) throws Exception { // count message + check new bean is created
                         messages++;
 
                         final Bean1 bean = instance();
@@ -89,7 +88,7 @@ public class CamelScopeExtensionTest {
                         firstBean = bean;
 
                         assertNotNull(firstBean);
-                        // exchange.getIn().setBody(firstBean.enclose(exchange.getIn().getBody(String.class)));
+                        exchange.getIn().setBody(firstBean.enclose(exchange.getIn().getBody(String.class)));
                     }
                 })
                 .process(new Processor() {
@@ -100,7 +99,6 @@ public class CamelScopeExtensionTest {
                         assertSame(firstBean, second);
                     }
                 })
-                .bean(Bean1.class)
                 .process(new Processor() {
                     @Override
                     public void process(Exchange exchange) throws Exception { // check bean result "small business"
