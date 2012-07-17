@@ -16,7 +16,7 @@ public final class ExchangeHolder {
     public static Exchange get() {
         final Exchange ex = EXCHANGE.get();
         try {
-            return EXCHANGE.get();
+            return ex;
         } finally { // force cleanup
             if (ex == null) {
                 EXCHANGE.remove();
