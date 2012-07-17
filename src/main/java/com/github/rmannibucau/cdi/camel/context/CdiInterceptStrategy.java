@@ -24,16 +24,20 @@ public class CdiInterceptStrategy implements InterceptStrategy {
         @Override
         public boolean process(final Exchange exchange, final AsyncCallback callback) {
             ExchangeHolder.set(exchange);
+            boolean out = true;
             try {
-                return getProcessor().process(exchange, new AsyncCallback() {
+                out = getProcessor().process(exchange, new AsyncCallback() {
                     @Override
                     public void done(boolean doneSync) {
                         callback.done(doneSync);
                     }
                 });
+            } catch (Throwable e) {
+                exchange.setException(e);
             } finally { // do it synchronously since we use a threadlocal
                 ExchangeHolder.remove();
             }
+            return out;
         }
     }
 }
