@@ -1,5 +1,6 @@
 package com.github.rmannibucau.cdi.camel.context;
 
+import com.github.rmannibucau.cdi.camel.event.CamelEventProducer;
 import com.github.rmannibucau.cdi.camel.registry.CdiRegistry;
 import com.github.rmannibucau.cdi.camel.scope.ExchangeContext;
 import org.apache.camel.impl.DefaultCamelContext;
@@ -19,6 +20,7 @@ public final class CdiCamelContext extends DefaultCamelContext {
     @Override
     public void start() throws Exception {
         getManagementStrategy().addEventNotifier(new ExchangeContext());
+        getManagementStrategy().addEventNotifier(new CamelEventProducer());
         super.start();
     }
 }
