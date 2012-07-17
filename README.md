@@ -84,3 +84,11 @@ Here a little sample:
     }
 
 Then simply use this bean in your camel routes.
+
+## Camel Injector
+
+CdiCamelInjector uses cdi beans if possible or delegate to default injector
+to get beans.
+
+Can be used out of cdi camel context but is activated by default with this extension.
+
