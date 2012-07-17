@@ -21,8 +21,13 @@ public class CdiRegistry implements Registry {
     @Override
     public <T> T lookup(final String name, final Class<T> type) {
         final BeanManager bm = BeanManagerHelper.get();
+        final T t;
         if (bm != null) {
-            return BeanProvider.getContextualReference(name, true, type);
+            t = BeanProvider.getContextualReference(name, true, type);
+            if (t == null) {
+                return BeanProvider.getContextualReference(type, true);
+            }
+            return t;
         }
         return null;
     }

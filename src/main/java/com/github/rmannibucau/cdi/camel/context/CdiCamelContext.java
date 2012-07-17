@@ -5,10 +5,12 @@ import com.github.rmannibucau.cdi.camel.registry.CdiRegistry;
 import com.github.rmannibucau.cdi.camel.scope.ExchangeContext;
 import org.apache.camel.impl.DefaultCamelContext;
 import org.apache.camel.model.RouteDefinition;
+import org.apache.camel.spi.Injector;
 
 public final class CdiCamelContext extends DefaultCamelContext {
     public CdiCamelContext() {
         super(new CdiRegistry());
+        setInjector(new CdiCamelInjector(this));
     }
 
     @Override
