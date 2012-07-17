@@ -1,3 +1,5 @@
+[![Build Status](https://secure.travis-ci.org/rmannibucau/camel-cdi-extension.png)](http://travis-ci.org/rmannibucau/camel-cdi-extension)
+
 # Goal of the project
 
 Integrate Camel and CDI.
